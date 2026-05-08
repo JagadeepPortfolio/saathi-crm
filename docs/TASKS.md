@@ -1,8 +1,21 @@
 # Tasks — Saathi CRM, 12-day plan
 
-Today is **2026-05-06**. Submission deadline **2026-05-18**. Solo, Claude Code Max 5x, Mac, iPhone, no Android.
+Plan kicked off **2026-05-06**. Submission deadline **2026-05-18**. Solo, Claude Code Max 5x, Mac, iPhone, no Android.
 
 Each day has: **goal**, **deliverables**, **fail-fast checks**, **timebox**. If a day's fail-fast check fails, stop and pivot — do not push into the next day on a broken foundation.
+
+---
+
+## Status (live)
+
+- ✅ **Day 1 — 2026-05-06/07**: scaffold + Supabase + GitHub + Vercel deploy. https://saathi-crm.vercel.app live with placeholder. Twilio Sandbox swapped in for Meta WhatsApp (faster setup, real API). Schema seeded with 8 demo customers.
+- ✅ **Day 2 — 2026-05-08**: Gemma 4 + whisper.cpp pipeline de-risked. All 4 acceptance gates green (Gate 4 latency 11s warm — usable for demo). Architecture pivots: ASR is whisper.cpp + ggml-large-v3-turbo (not IndicConformer), Gemma 4 audio capability declared but unreliable through Ollama 0.20.2. `think: false` flag is critical on every request.
+- ⏳ **Day 3 — next**: Flow 1 backend (`/api/intake`), Supabase Storage buckets, intake-prompt iteration to fix the BlueShift→name parsing issue and notes-vs-services merging.
+
+Known issues to fix during Day 3-4 prompt iteration (from Day 2 acceptance run):
+1. Whisper sometimes drops a space ("BlueShift" instead of "Blue Shift"), and Gemma 4 then merges car-make into the customer name field
+2. Visit notes occasionally land in the `services` array — needs few-shot examples
+3. License plate from transcript still inconsistently extracted despite prompt update
 
 ---
 

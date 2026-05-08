@@ -96,19 +96,25 @@ Single endpoint `POST /generate`, OpenAI-style messages format with tool calling
 
 The system prompt for Flow 1 lists `customer.*` tools. The system prompt for Flow 2 lists `whatsapp.*` tools. Scoping the tool list per flow reduces hallucination.
 
-## ASR — IndicConformer
+## ASR — whisper.cpp + ggml-large-v3-turbo (locked Day 2)
 
-Why: Gemma 4's audio mode is new and unbenchmarked for low-resource Indic. IndicConformer is purpose-built for 22 Indian languages including Telugu and code-mixed Hindi. Faster, cheaper, more reliable.
+**Decision (locked Day 2 — see commit "Day 2 de-risk"):** server-side ASR via whisper.cpp running `ggml-large-v3-turbo` (1.5GB), not IndicConformer. Why this beat the original plan:
+
+- Gemma 4's native audio path through Ollama 0.20.2 was unreliable — silently hallucinated generic Telugu greetings instead of transcribing. Capability declared, API not wired through.
+- whisper-large-v3-turbo gave **~85% WER on a real Telugu/English code-mixed clip** with the license plate transcribed perfectly.
+- `brew install whisper-cpp ffmpeg` plus a model download is under 5 minutes total. No HF auth wall, no rate limits, fully offline.
+
+Pipeline:
 
 ```
-audio (webm/m4a) → ffmpeg → 16kHz wav → IndicConformer → {text, language, confidence}
+audio (m4a/webm) → ffmpeg (16kHz mono WAV) → whisper-cli -l <te|hi|en> → transcript
 ```
 
-Two deploy options on Day 2:
-- Self-host on the same Mac (one Python service alongside Gemma)
-- Hugging Face Inference Endpoint (zero-ops, free tier OK for demo volume)
+Implementation: `lib/asr/whisper.ts` spawns `whisper-cli` and `ffmpeg` as subprocesses. Public function `transcribe({audioBytes, language})` returns `{text, language, ms}`. Same Mac runs Ollama and whisper-cli; the Cloudflare Tunnel exposes a thin Next.js endpoint that calls both internally.
 
-Decision criterion: if HF endpoint latency is <2s for a 15s clip, use it. Otherwise self-host.
+## CRITICAL Ollama flag for Gemma 4: `think: false`
+
+Every request from `gemmaAdapter.ts` sets `think: false` at the top level of the request body. Without it, Gemma 4 emits a long reasoning trace into a `thinking` field and burns the `num_predict` budget before producing the actual `tool_calls` — making the model look broken when it's actually just verbose. Confirmed empirically on Day 2.
 
 ## Multimodal — vision
 

@@ -34,9 +34,9 @@ Ship a working PWA that lets a Hyderabad car detailing shop owner add customers 
 - PWA manifest, installable, offline shell
 - iOS Safari is the primary target — test on Safari before Chrome
 - Mobile-first, designed for 390px width
-- Server-side Gemma 4 via adapter pattern
-- AI4Bharat IndicConformer for Telugu/Hindi ASR (server-side)
-- Meta WhatsApp Business Cloud API for sends
+- Server-side Gemma 4 via adapter pattern (Ollama-backed, `gemma4:e4b` 8B)
+- whisper.cpp + ggml-large-v3-turbo for Telugu/Hindi ASR (locked Day 2)
+- Twilio WhatsApp Sandbox for sends (locked Day 1; provider abstraction lets V2 swap to Meta)
 - Saathi Saffron design tokens (see `UI_UX_SPEC.md`)
 
 ## Strict Scope Control — Do NOT Build
