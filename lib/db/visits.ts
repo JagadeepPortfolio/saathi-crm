@@ -1,6 +1,34 @@
 import type { Visit } from "@/lib/types";
 import { db } from "./client";
 
+export type VisitPatch = Partial<{
+  services: string[];
+  amount_inr: number;
+  notes: string | null;
+  next_visit_hint: string | null;
+}>;
+
+export async function patchVisit(id: string, patch: VisitPatch): Promise<Visit> {
+  const { data, error } = await db()
+    .from("visits")
+    .update(patch)
+    .eq("id", id)
+    .select("*")
+    .single();
+  if (error || !data) throw new Error(`patchVisit failed: ${error?.message}`);
+  return data as Visit;
+}
+
+export async function listVisitsForCustomer(customerId: string): Promise<Visit[]> {
+  const { data, error } = await db()
+    .from("visits")
+    .select("*")
+    .eq("customer_id", customerId)
+    .order("created_at", { ascending: false });
+  if (error) throw new Error(`listVisitsForCustomer failed: ${error.message}`);
+  return (data ?? []) as Visit[];
+}
+
 export type CreateVisitArgs = {
   customer_id: string;
   car_id?: string | null;

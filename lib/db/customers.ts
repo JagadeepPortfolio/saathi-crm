@@ -79,6 +79,59 @@ export async function createCustomer(args: CreateCustomerArgs): Promise<Customer
   return data as Customer;
 }
 
+export async function recentCustomers(limit = 5): Promise<Customer[]> {
+  const { data, error } = await db()
+    .from("customers")
+    .select("*")
+    .eq("shop_id", PILOT_SHOP_ID)
+    .order("last_visit_at", { ascending: false })
+    .limit(limit);
+  if (error) throw new Error(`recentCustomers failed: ${error.message}`);
+  return (data ?? []) as Customer[];
+}
+
+export async function todayAddedCount(): Promise<number> {
+  const since = new Date();
+  since.setHours(0, 0, 0, 0);
+  const { count, error } = await db()
+    .from("customers")
+    .select("*", { count: "exact", head: true })
+    .eq("shop_id", PILOT_SHOP_ID)
+    .gte("first_visit_at", since.toISOString());
+  if (error) throw new Error(`todayAddedCount failed: ${error.message}`);
+  return count ?? 0;
+}
+
+export async function lapsedCount(daysThreshold = 60): Promise<number> {
+  const cutoff = new Date(Date.now() - daysThreshold * 86_400_000).toISOString();
+  const { count, error } = await db()
+    .from("customers")
+    .select("*", { count: "exact", head: true })
+    .eq("shop_id", PILOT_SHOP_ID)
+    .lt("last_visit_at", cutoff);
+  if (error) throw new Error(`lapsedCount failed: ${error.message}`);
+  return count ?? 0;
+}
+
+export type CustomerPatch = Partial<{
+  name: string;
+  phone: string | null;
+  preferred_language: Language;
+  notes: string | null;
+}>;
+
+export async function patchCustomer(id: string, patch: CustomerPatch): Promise<Customer> {
+  const { data, error } = await db()
+    .from("customers")
+    .update(patch)
+    .eq("id", id)
+    .eq("shop_id", PILOT_SHOP_ID)
+    .select("*")
+    .single();
+  if (error || !data) throw new Error(`patchCustomer failed: ${error?.message}`);
+  return data as Customer;
+}
+
 export async function bumpCustomerOnVisit(
   customerId: string,
   primaryCarId: string | null

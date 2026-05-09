@@ -1,6 +1,23 @@
+import Link from "next/link";
 import { Mic } from "lucide-react";
 
-export default function Today() {
+import BottomBar from "@/components/BottomBar";
+import { customerStatus } from "@/lib/types";
+import {
+  lapsedCount,
+  recentCustomers,
+  todayAddedCount,
+} from "@/lib/db/customers";
+
+export const dynamic = "force-dynamic";
+
+export default async function Today() {
+  const [recent, todayCount, lapsed] = await Promise.all([
+    recentCustomers(5),
+    todayAddedCount(),
+    lapsedCount(60),
+  ]);
+
   const today = new Date().toLocaleDateString("en-IN", {
     weekday: "long",
     day: "numeric",
@@ -28,34 +45,75 @@ export default function Today() {
       </section>
 
       <section className="grid grid-cols-2 gap-3 px-5">
-        <div className="rounded-card border border-border bg-surface p-4">
+        <Link
+          href="/customers?filter=today"
+          className="rounded-card border border-border bg-surface p-4 active:bg-surface-2"
+        >
           <p className="text-base text-text-muted">Today</p>
-          <p className="text-2xl font-semibold text-text">0 added</p>
-        </div>
-        <div className="rounded-card border border-border bg-surface p-4">
+          <p className="text-2xl font-semibold text-text">{todayCount} added</p>
+        </Link>
+        <Link
+          href="/customers?filter=lapsed"
+          className="rounded-card border border-border bg-surface p-4 active:bg-surface-2"
+        >
           <p className="text-base text-text-muted">Lapsed</p>
-          <p className="text-2xl font-semibold text-text">0</p>
-        </div>
+          <p className="text-2xl font-semibold text-text">{lapsed}</p>
+        </Link>
       </section>
 
       <section className="flex-1 px-5 py-6">
         <h2 className="mb-3 text-2xl font-semibold text-text">Recent</h2>
-        <div className="rounded-card border border-border bg-surface p-6 text-center">
-          <p className="text-base text-text-muted">Add your first customer.</p>
-        </div>
+        {recent.length === 0 ? (
+          <div className="rounded-card border border-border bg-surface p-6 text-center">
+            <p className="text-base text-text-muted">Add your first customer.</p>
+          </div>
+        ) : (
+          <ul className="flex flex-col gap-px overflow-hidden rounded-card border border-border bg-surface">
+            {recent.map((c) => {
+              const status = customerStatus(c);
+              const dotColor =
+                status === "lapsed"
+                  ? "bg-accent"
+                  : status === "amber"
+                    ? "bg-primary"
+                    : "bg-success";
+              return (
+                <li key={c.id}>
+                  <Link
+                    href={`/customers/${c.id}`}
+                    className="flex items-center justify-between gap-3 px-4 py-3 active:bg-surface-2"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-base font-semibold text-text">
+                        {c.name}
+                      </p>
+                      <p className="truncate text-base text-text-muted">
+                        {new Date(c.last_visit_at).toLocaleDateString("en-IN", {
+                          day: "numeric",
+                          month: "short",
+                        })}
+                      </p>
+                    </div>
+                    <span className={`h-2 w-2 shrink-0 rounded-full ${dotColor}`} />
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        )}
       </section>
 
-      <div className="sticky bottom-0 border-t border-border bg-bg px-5 py-4">
-        <button
-          type="button"
-          disabled
-          className="flex h-14 w-full items-center justify-center gap-2 rounded-button bg-primary text-base font-semibold text-white opacity-60"
-          aria-label="Record customer note"
+      <div className="sticky bottom-14 border-t border-border bg-bg px-5 py-4">
+        <Link
+          href="/record"
+          className="flex h-14 w-full items-center justify-center gap-2 rounded-button bg-primary text-base font-semibold text-white active:bg-primary-700"
         >
           <Mic size={20} />
           Record
-        </button>
+        </Link>
       </div>
+
+      <BottomBar />
     </main>
   );
 }
