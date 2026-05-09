@@ -9,6 +9,10 @@ export const metadata: Metadata = {
     capable: true,
     title: "Saathi",
     statusBarStyle: "default",
+    startupImage: ["/apple-icon"],
+  },
+  formatDetection: {
+    telephone: false,
   },
 };
 
