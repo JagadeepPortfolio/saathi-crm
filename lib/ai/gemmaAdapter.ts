@@ -69,38 +69,77 @@ function metaFrom(r: OllamaResponse): ToolCallMeta {
   };
 }
 
-const INTAKE_SYSTEM = [
-  "You are the intake parser for Saathi, a CRM tool for Indian small businesses.",
-  "Output exactly one tool call. No prose. No explanation.",
-  "Owner languages may be Telugu, Hindi, English, or code-mixed. Preserve the customer's name and notes in the original language used.",
-  "Strip honorifics like 'sir', 'garu', 'ji', 'anna' from the name field; address style belongs in tone, not the record.",
-  "Extract the license plate from the transcript if mentioned (Indian plates look like TS09EX1234, KA01AB9999, etc.). Also extract from the photo if visible. If neither has a plate, omit the field. Never invent.",
-  "Set preferred_language to the language hint passed by the caller, unless the transcript text is overwhelmingly in a different script (Telugu script => te, Devanagari => hi, otherwise Latin => en).",
-  "Use customer.update only when knownCustomers contains a clear match by phone, plate, or near-identical name. Otherwise customer.create.",
-  "Never invent phone numbers, prices, or dates not present in the input. Omit absent fields rather than writing 'N/A', null, or empty strings.",
-].join(" ");
+const INTAKE_SYSTEM = `You are the intake parser for Saathi, a CRM tool for Indian small businesses.
+
+OUTPUT FORMAT — non-negotiable:
+- Invoke exactly one of the provided tools (customer.create or customer.update) using the function-calling mechanism.
+- DO NOT write function-call syntax as text in your message content. Use the structured tool call API only.
+- DO NOT add prose or explanation around the tool call.
+- The model harness will reject any response that puts the call in content text rather than emitting a tool_calls entry.
+
+CORE RULES
+
+1. name = the human customer's first name ONLY, with honorifics ('sir', 'garu', 'ji', 'anna', 'akka', 'bhai') stripped. NEVER include car make/model, color, or any non-name token. If the transcript merges name with a car word (e.g. "RameshSwift" or "AnithaCity"), keep only the human first name.
+
+2. car.make / car.model: Indian-market mapping when the model is mentioned alone:
+     Swift, Baleno, Brezza, Dzire, WagonR, Alto, Celerio  → Maruti
+     City, Amaze, Jazz, WR-V, Elevate                     → Honda
+     Creta, Verna, Venue, i20, i10, Aura                  → Hyundai
+     Nexon, Punch, Altroz, Harrier, Safari                → Tata
+     Seltos, Sonet, Carens, Carnival                      → Kia
+     XUV300, XUV700, Scorpio, Bolero, Thar                → Mahindra
+   If only the model is given, set make accordingly. If neither, omit both.
+
+3. car.license_plate: extract from transcript using Indian plate patterns
+   (TS09EX1234, KA01AB9999, MH12CD3456 etc — two letters, two digits, one or two letters, four digits).
+   Also extract from the photo if visible. Never invent. Omit if absent.
+
+4. visit.services: ONLY actual service names. Examples:
+     "full ceramic detailing", "graphene coating", "ppf", "paint correction",
+     "interior deep cleaning", "maintenance wash", "sun film", "polish".
+   NEVER put status words ("paid", "advance", "due"), complaint words ("complaint",
+   "compliant", "smell", "stain"), or honorific filler in services.
+
+5. visit.notes: customer feedback, complaints, observations, special instructions.
+   This is where "wax smell complaint", "oil stain remove karne bola",
+   "prefers Sunday slots" go — NOT in services.
+
+6. visit.amount_inr: number, not string. If transcript has multiple numbers,
+   take the one in payment context ("X paid", "X mein", "X rupees", "₹X").
+
+7. visit.next_visit_hint: timeframe phrase like "2 months", "next week", "after Diwali".
+   Parse from "X baad", "X later", "in X", "after X" patterns.
+
+8. preferred_language: defaults to the language hint provided. Override only if the
+   transcript script is overwhelmingly different (Telugu glyphs → te, Devanagari → hi).
+
+9. phone: extract Indian phone format (10 digits or +91 prefix). Omit if absent.
+   NEVER write "N/A", null, or empty string — just leave the field out.
+
+10. customer.update only when knownCustomers contains a clear match by phone, plate, or near-identical name. Otherwise customer.create.
+
+REFERENCE — for a transcript like "Ramesh sir blue Swift TS09EX1234 full ceramic detailing 2500 paid, wax smell complaint, 2 months baad come back" with empty knownCustomers, the right call is to the customer.create tool with arguments:
+- name: "Ramesh" (no "sir")
+- preferred_language: "te"
+- car: license_plate "TS09EX1234", make "Maruti", model "Swift", color "blue"
+- visit: services ["full ceramic detailing"], amount_inr 2500, notes "wax smell complaint", next_visit_hint "2 months"
+
+Notice: name is the human only. "complaint" is in notes, never services. "paid" never in services. Plate extracted by regex. Make inferred from model.`;
 
 export const gemmaAdapter: AIAdapter = {
   async parseIntake(input: ParseIntakeInput): Promise<ParseIntakeResult> {
     const userText = [
-      `Owner transcript (${input.language}): ${input.transcript}`,
+      `language hint: "${input.language}"`,
+      `transcript: ${input.transcript}`,
       `knownCustomers: ${JSON.stringify(input.knownCustomers)}`,
     ].join("\n");
 
-    const userContent: unknown =
-      input.photoBase64
-        ? [
-            { type: "text", text: userText },
-          ]
-        : userText;
-
     const messageBody: Record<string, unknown> = {
       role: "user",
-      content: userContent,
+      content: userText,
     };
     if (input.photoBase64) {
-      // Ollama accepts images as a sibling array on the message.
-      (messageBody as Record<string, unknown>).images = [input.photoBase64];
+      messageBody.images = [input.photoBase64];
     }
 
     const r = await chat({
@@ -127,18 +166,23 @@ export const gemmaAdapter: AIAdapter = {
       throw new Error(`Unexpected tool: ${tc.function.name}`);
     }
 
-    const args = tc.function.arguments as
-      | CustomerCreateArgs
-      | (CustomerCreateArgs & { customer_id: string });
+    const args = tc.function.arguments as Record<string, unknown>;
+    if (!args.visit || typeof args.visit !== "object") {
+      throw new Error(
+        `Gemma 4 ${name} missing required visit field. args=${JSON.stringify(
+          args
+        ).slice(0, 400)}`
+      );
+    }
 
     const toolCall: IntakeToolCall =
       name === "customer.create"
-        ? { name: "customer.create", arguments: args as CustomerCreateArgs }
+        ? { name: "customer.create", arguments: args as unknown as CustomerCreateArgs }
         : {
             name: "customer.update",
             arguments: {
-              customer_id: (args as { customer_id: string }).customer_id,
-              visit: (args as CustomerCreateArgs).visit,
+              customer_id: args.customer_id as string,
+              visit: (args as unknown as CustomerCreateArgs).visit,
             },
           };
 

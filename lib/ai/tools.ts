@@ -56,10 +56,6 @@ export const INTAKE_TOOLS = [
       required: ["customer_id", "visit"],
       properties: {
         customer_id: { type: "string" },
-        visit: { $ref: "#/$defs/visit" },
-        field_updates: { type: "object" },
-      },
-      $defs: {
         visit: {
           type: "object",
           required: ["services", "amount_inr"],
@@ -70,6 +66,7 @@ export const INTAKE_TOOLS = [
             next_visit_hint: { type: "string" },
           },
         },
+        field_updates: { type: "object" },
       },
     },
   },
