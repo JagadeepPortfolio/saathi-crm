@@ -1,10 +1,36 @@
 import { NextResponse } from "next/server";
 import type { CustomerPatch } from "@/lib/db/customers";
-import { patchCustomer } from "@/lib/db/customers";
+import { getCustomer, patchCustomer } from "@/lib/db/customers";
+import { listVisitsForCustomer } from "@/lib/db/visits";
 
 export const runtime = "nodejs";
 
 const ALLOWED = ["name", "phone", "preferred_language", "notes"] as const;
+
+export async function GET(
+  _req: Request,
+  ctx: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await ctx.params;
+    const customer = await getCustomer(id);
+    if (!customer) {
+      return NextResponse.json({ error: "not_found" }, { status: 404 });
+    }
+    const visits = await listVisitsForCustomer(customer.id);
+    return NextResponse.json(
+      { customer, recentVisit: visits[0] ?? null },
+      { status: 200 }
+    );
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "unknown";
+    console.error("[customers GET] failed:", msg);
+    return NextResponse.json(
+      { error: "get_failed", message: msg.slice(0, 300) },
+      { status: 500 }
+    );
+  }
+}
 
 export async function PATCH(
   req: Request,
