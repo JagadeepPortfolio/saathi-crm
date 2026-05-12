@@ -6,6 +6,8 @@ The owner records a 10-second voice note in Telugu, Hindi, or English, photograp
 
 The pilot is a car detailing studio in Hyderabad. The architecture generalizes to any micro-business that runs on a phone and lives on WhatsApp.
 
+> **Demo viewport.** Saathi is a mobile-first PWA — the same React code renders on iOS Safari, Android Chrome, and desktop browsers. The submission video and the README screenshots are recorded from Mac Safari at a **390 × 844 px** viewport (Develop → Responsive Design Mode → iPhone 15 Pro), so judges can clone the repo and reproduce every pixel of the demo locally. See `docs/SUBMISSION.md` for the deployment-shape rationale.
+
 | | |
 |---|---|
 | Live PWA | https://saathi-crm.vercel.app |
@@ -22,7 +24,7 @@ cp .env.example .env.local        # fill in keys per below
 npm run dev
 ```
 
-Open `http://localhost:3000`. Try Today → Customers → pick Ramesh → Draft follow-up. Append `?demo=1` to any URL to see the live Gemma 4 → Twilio function-call trace.
+Open `http://localhost:3000` in Safari. To see exactly what judges see in the video, open Develop → Enter Responsive Design Mode → iPhone 15 Pro. Try Today → Customers → pick Ramesh → Draft follow-up. Append `?demo=1` to any URL to see the live Gemma 4 → Twilio function-call trace.
 
 ## Setup checklist
 

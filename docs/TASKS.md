@@ -10,7 +10,11 @@ Each day has: **goal**, **deliverables**, **fail-fast checks**, **timebox**. If 
 
 - ✅ **Day 1 — 2026-05-06/07**: scaffold + Supabase + GitHub + Vercel deploy. https://saathi-crm.vercel.app live with placeholder. Twilio Sandbox swapped in for Meta WhatsApp (faster setup, real API). Schema seeded with 8 demo customers.
 - ✅ **Day 2 — 2026-05-08**: Gemma 4 + whisper.cpp pipeline de-risked. All 4 acceptance gates green (Gate 4 latency 11s warm — usable for demo). Architecture pivots: ASR is whisper.cpp + ggml-large-v3-turbo (not IndicConformer), Gemma 4 audio capability declared but unreliable through Ollama 0.20.2. `think: false` flag is critical on every request.
-- ⏳ **Day 3 — next**: Flow 1 backend (`/api/intake`), Supabase Storage buckets, intake-prompt iteration to fix the BlueShift→name parsing issue and notes-vs-services merging.
+- ✅ **Day 3–6 — 2026-05-08/11**: Flow 1 backend, Flow 1 frontend, Flow 2 backend (Twilio send + webhook), Flow 2 frontend with Draft Review and demo-mode tool-call trace. End-to-end works on Mac browser, mobile-responsive at 390 px.
+- ✅ **Day 8 (early) — 2026-05-12**: anti-slop pass, custom 404 + error boundary, edit screen.
+- ✅ **Day 9 (early) — 2026-05-12**: Modal serverless adapter, PWA shell, two production bugs found and fixed during integration testing (audio MIME parameter mismatch, stray `customer.search` tool exposure causing intake failures).
+- ✅ **Day 11 (early) — 2026-05-12**: SUBMISSION.md drafted; README polished.
+- ⏳ **Day 7 — today**: owner field validation (revised plan — see below). Demo runtime is the Mac browser at 390 px viewport; iPhone field test dropped after iOS Safari mic permission flakiness on ephemeral cloudflared origins. The PWA still installs on iOS Safari, but the demo video is screen-recorded for fidelity and reproducibility (see `SUBMISSION.md` capability honesty section 4).
 
 Known issues to fix during Day 3-4 prompt iteration (from Day 2 acceptance run):
 1. Whisper sometimes drops a space ("BlueShift" instead of "Blue Shift"), and Gemma 4 then merges car-make into the customer name field
@@ -173,21 +177,27 @@ Known issues to fix during Day 3-4 prompt iteration (from Day 2 acceptance run):
 
 ---
 
-## Day 7 — 2026-05-12 (Mon): Owner field test ★ critical
+## Day 7 — 2026-05-12 (Mon): Owner field validation ★ critical
 
-**Goal:** Owner uses Saathi unaided for one shift. You watch, capture issues, fix critical bugs same day.
+**Goal:** Run the owner's last week of real customer data through the pipeline on the Mac, validate Telugu accuracy with the owner in person, and capture the shop B-roll + owner-to-camera testimonial that anchor the demo video.
+
+The original plan asked the owner to use Saathi unaided on his iPhone for a full shift. We replaced that with a higher-signal, lower-noise protocol: the developer drives the pipeline on the Mac (where the runtime is stable), the owner reads the parsed records and Telugu drafts and rates each one, and the owner records a 25-second Telugu voice note that plays in the demo video. Saves a half-day of debugging iPhone Safari permission UX without losing the impact evidence.
 
 **Deliverables:**
-- Visit shop with the owner. Help him add Saathi to his iPhone home screen.
-- Owner uses Saathi for 5+ real customers (real intake, real follow-up at the end of the day on a lapsed customer)
-- You take notes silently. Don't help unless he hits a true blocker
-- Capture (with permission): owner clip for the demo video; B-roll of the shop, the cars, the iPhone
+- Visit the shop with a laptop. Sit with the owner.
+- Re-create 5+ recent customer intakes from the last week: developer presses Record on the laptop, owner speaks the Telugu voice note into the laptop mic, photo of the matching car is uploaded
+- Owner reads each parsed customer record on screen, rates accuracy, calls out errors
+- Owner reads each AI-drafted Telugu follow-up, rates tone, edits before send
+- Send one real Saathi-drafted follow-up to a real customer via WhatsApp; confirm arrival + receipt callbacks
+- Owner records the 12-second Telugu-to-camera testimonial (shot #8 of `DEMO_SCRIPT.md`)
+- Capture B-roll per `DEMO_SCRIPT.md` "B-roll requirements"
 - Same evening: fix the top 3 critical issues found
 
 **Fail-fast checks:**
-- Owner completes ≥3 customer intakes without help → ✅
-- Owner sends ≥1 follow-up successfully → ✅
-- Owner says, in his own words, that the Telugu output is accurate → ✅
+- ≥5 customer records parsed and rated accurate ≥80% of the time by the owner → ✅
+- ≥5 Telugu drafts rated send-ready (no/minor edits) by the owner → ✅
+- One real WhatsApp follow-up arrives at a real customer, message status reaches `delivered` → ✅
+- Owner's Telugu testimonial captured cleanly (audio clear, English subtitles writable) → ✅
 
 **Pivot triggers:**
 - If the Telugu drafts are consistently rewritten by the owner before sending → Day 8 is for prompt engineering, not UI polish
@@ -233,8 +243,8 @@ Known issues to fix during Day 3-4 prompt iteration (from Day 2 acceptance run):
 - `grep -rE "from 'lucide-react'" components/` — verify no banned icons
 
 **Fail-fast checks:**
-- Kill the Mac's Gemma server mid-demo → traffic flips to Modal → owner doesn't notice
-- Disconnect network from PWA → service worker shows offline page → reconnect, queued send fires
+- Kill the Mac's Gemma server mid-demo → traffic flips to Modal → demo continues without restart
+- Disconnect network from the browser → service worker shows offline page → reconnect, queued send fires
 
 **Timebox:** 8 hours.
 
@@ -246,8 +256,9 @@ Known issues to fix during Day 3-4 prompt iteration (from Day 2 acceptance run):
 
 **Deliverables:**
 - Storyboard from `DEMO_SCRIPT.md` followed shot by shot
-- Owner-to-camera clip captured at the shop (12s Telugu)
-- B-roll captured (shop, hands on a car, iPhone home screen, WhatsApp arriving on a second phone)
+- Owner-to-camera clip captured at the shop on Day 7 (12s Telugu)
+- Shop B-roll captured on Day 7 (shop, hands on a car, WhatsApp arriving on the owner's phone)
+- **Technical demo screen recording**: Mac Safari at 390 px viewport, Cmd+Shift+5 bounded screen capture, walking the Record → Save → Customers → Draft → Send flow once cleanly
 - Voiceover recorded (your voice, not AI; English; ~85 words)
 - Edit in CapCut or Final Cut; subtitles burned in for Telugu segments
 - Upload as unlisted YouTube; URL ready

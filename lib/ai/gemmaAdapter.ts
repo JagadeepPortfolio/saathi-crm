@@ -73,6 +73,7 @@ const INTAKE_SYSTEM = `You are the intake parser for Saathi, a CRM tool for Indi
 
 OUTPUT FORMAT — non-negotiable:
 - Invoke exactly one of the provided tools (customer.create or customer.update) using the function-calling mechanism.
+- There is NO search tool. The caller has already searched and passed the result in knownCustomers. Do not request a search.
 - DO NOT write function-call syntax as text in your message content. Use the structured tool call API only.
 - DO NOT add prose or explanation around the tool call.
 - The model harness will reject any response that puts the call in content text rather than emitting a tool_calls entry.

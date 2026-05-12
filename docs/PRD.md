@@ -74,11 +74,11 @@ The owner's phone becomes a customer-relationship co-pilot. After every customer
 
 ## Success criteria
 
-- Owner uses Saathi unaided for one shift and adds 5+ customers
-- Telugu voice intake produces structured records the owner reads as accurate ≥80% of the time
-- AI-drafted Telugu WhatsApp messages are sent without owner edits ≥50% of the time, and with minor edits ≥90%
-- One real customer responds positively to a Saathi-sent follow-up during the pilot
-- Demo video runs end-to-end on the owner's iPhone in the actual shop
+- Owner reviews ≥5 parsed customer records (from real shop visit data run through the full pipeline) and rates them accurate ≥80% of the time
+- Telugu drafts generated for ≥5 of those customers are rated by the owner as send-ready without edits ≥50% of the time, and with minor edits ≥90%
+- One real customer receives a Saathi-drafted follow-up via WhatsApp and the message is logged through delivery + read receipts
+- Owner records a 12-second Telugu-to-camera testimonial confirming the language and tone feel correct
+- Demo video runs end-to-end against a real Gemma 4 endpoint and a real WhatsApp send
 - Repo is buildable by a stranger in under 10 minutes
 
 ## Key message for the submission

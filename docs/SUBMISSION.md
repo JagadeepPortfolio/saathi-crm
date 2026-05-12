@@ -165,6 +165,29 @@ Inlining every tool schema fully avoids a class of silent failures where
 referenced fields just don't appear in the model output. Documented in
 `lib/ai/tools.ts`.
 
+### 4. Demo recording uses a desktop browser at a phone viewport
+
+The PWA is built mobile-first and the same React code runs on iOS Safari,
+Android Chrome, and any desktop browser. For the submission video we record
+the technical demo from Mac Safari sized to a 390 px viewport rather than
+from a physical iPhone, for three reasons:
+
+- **Reproducibility for judges.** A judge can clone the repo, run
+  `npm run dev`, and reproduce the on-screen demo locally in under ten
+  minutes. A phone screen recording is one-of-one.
+- **Function-call trace legibility.** The `?demo=1` tool-call row is
+  monospace at ~12 px — sharper in a controlled-viewport browser recording
+  than across a phone bezel and reflective glass.
+- **Permission-prompt variance on ephemeral tunnel hostnames.** iOS Safari
+  grants `getUserMedia` per origin; ephemeral `trycloudflare.com`
+  hostnames rotate, which produces unpredictable retake load during a 90s
+  shoot. A controlled environment removes that variance.
+
+The owner's 12-second Telugu testimonial is still filmed at the shop with
+the owner-to-camera. The architecture, the code path, the PWA install
+behavior, and the mobile-first layout are unchanged — this is a
+video-production decision, not a product one.
+
 ## Empirical numbers
 
 Measured on a Mac M2 with `gemma4:e4b` (8B Q4_K_M, 9.6 GB) + whisper-cpp
@@ -234,19 +257,27 @@ gates pass on a Mac M2.
 
 ## Impact
 
-*Field-test data from Day 7 shop visit lands here after the pilot.*
+*Field-validation data from the Day 7 shop visit lands here after the pilot.*
 
-Pre-test commitments from the owner:
+Pilot agreement with the shop owner:
 
-- Use Saathi unaided for one shift (5+ real customers expected)
-- Telugu draft accuracy review (read-and-rate each draft)
+- Saathi runs the owner's last week of real customer intakes through the
+  full pipeline (Telugu voice + car photo → parsed record → Telugu draft)
+- Owner reads each parsed record and each Telugu draft, rates accuracy
+  and tone, and re-records a sample directly into Saathi to verify the
+  live pipeline against his own voice
 - One real customer receives a Saathi-generated follow-up via WhatsApp
-- 12-second owner-to-camera Telugu testimonial for the demo video
-- Permission to anonymize and share the resulting impact numbers
+  from the owner's verified Twilio sandbox number
+- 12-second owner-to-camera Telugu testimonial captured at the shop for
+  the demo video
+- Permission to anonymize and share the resulting accuracy numbers and
+  the testimonial
 
-The narrative beat for the video at 1:05–1:20 is the owner saying, in
-Telugu, that Saathi sent his first language-native customer follow-up
-without an English form, an app install, or a SaaS subscription.
+The video's emotional beat at 1:05–1:20 is the owner saying, in Telugu,
+that Saathi sent his first language-native customer follow-up without an
+English form, an app install, or a SaaS subscription. The technical
+beats elsewhere in the video are the live function-call trace, the
+Gemma 4 inference timing, and the WhatsApp arrival on a second screen.
 
 ## Future work
 

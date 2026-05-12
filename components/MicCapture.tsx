@@ -24,7 +24,7 @@ function pickMime(): string | undefined {
 }
 
 export default function MicCapture({ onRecorded, maxSeconds = 30 }: MicCaptureProps) {
-  const [state, setState] = useState<"idle" | "recording">("idle");
+  const [state, setState] = useState<"idle" | "requesting" | "recording">("idle");
   const [seconds, setSeconds] = useState(0);
   const [error, setError] = useState<string | null>(null);
 
@@ -49,6 +49,20 @@ export default function MicCapture({ onRecorded, maxSeconds = 30 }: MicCapturePr
   async function start() {
     setError(null);
     if (state !== "idle") return;
+    setState("requesting");
+    // Pre-flight: if mediaDevices is missing, no point calling anything.
+    if (typeof navigator === "undefined" || !navigator.mediaDevices?.getUserMedia) {
+      setError(
+        "This browser is not exposing the microphone API. iOS PWAs and some tunnel URLs strip it. Try the live Vercel URL instead."
+      );
+      setState("idle");
+      return;
+    }
+    if (typeof MediaRecorder === "undefined") {
+      setError("MediaRecorder is not available in this browser. Update iOS Safari to 14.3+.");
+      setState("idle");
+      return;
+    }
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
@@ -78,11 +92,16 @@ export default function MicCapture({ onRecorded, maxSeconds = 30 }: MicCapturePr
         if (elapsed >= maxSeconds) stop();
       }, 200);
     } catch (e) {
+      const name = e instanceof Error ? e.name : "Error";
+      const msg = e instanceof Error ? e.message : String(e);
       setError(
-        e instanceof Error && e.name === "NotAllowedError"
-          ? "Mic permission denied. Open Settings → Safari → Microphone to allow."
-          : `Could not start mic: ${e instanceof Error ? e.message : "unknown"}`
+        name === "NotAllowedError"
+          ? "Mic permission denied. Open iOS Settings → Safari → Microphone → Allow, then reload."
+          : name === "NotFoundError"
+            ? "No microphone found on this device."
+            : `Mic error (${name}): ${msg || "unknown"}`
       );
+      setState("idle");
     }
   }
 
@@ -113,6 +132,14 @@ export default function MicCapture({ onRecorded, maxSeconds = 30 }: MicCapturePr
           <Mic size={48} />
         </button>
       )}
+      {state === "requesting" && (
+        <div
+          className="flex h-32 w-32 items-center justify-center rounded-full bg-primary/70 text-white shadow-lg"
+          aria-live="polite"
+        >
+          <Mic size={48} />
+        </div>
+      )}
       {state === "recording" && (
         <button
           type="button"
@@ -126,7 +153,9 @@ export default function MicCapture({ onRecorded, maxSeconds = 30 }: MicCapturePr
       <p className="text-2xl font-semibold tabular-nums text-text">
         {state === "recording"
           ? `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`
-          : "Tap to record"}
+          : state === "requesting"
+            ? "Requesting microphone…"
+            : "Tap to record"}
       </p>
       {state === "recording" && (
         <p className="text-base text-text-muted">Speak in Telugu, Hindi, or English</p>

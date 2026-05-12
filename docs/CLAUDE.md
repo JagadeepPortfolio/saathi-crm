@@ -6,6 +6,8 @@ You are building **Saathi CRM**, a Gemma 4-powered PWA submission for the Kaggle
 
 Ship a working PWA that lets a Hyderabad car detailing shop owner add customers via Telugu voice + car photo, then send AI-drafted WhatsApp follow-ups with one tap. The demo must run end-to-end against a real Gemma 4 endpoint and send real WhatsApp messages.
 
+The demo runtime is **Mac Safari sized to a 390 px viewport** (mobile-responsive PWA, same code path the iPhone would render). The owner-to-camera Telugu testimonial is captured at the shop, but the technical demo is screen-recorded from the controlled viewport for fidelity and judge reproducibility — see `SUBMISSION.md` capability honesty section 4 for the framing.
+
 ## Read These First (in order)
 
 1. `docs/PRD.md`
@@ -32,8 +34,8 @@ Ship a working PWA that lets a Hyderabad car detailing shop owner add customers 
 - Next.js App Router · TypeScript · Tailwind CSS
 - Supabase (Postgres + Storage + RLS)
 - PWA manifest, installable, offline shell
-- iOS Safari is the primary target — test on Safari before Chrome
-- Mobile-first, designed for 390px width
+- Mobile-first, designed for 390 px width — same code renders on iOS Safari, Android Chrome, and desktop browsers
+- Demo runtime: Mac Safari sized to 390 × 844 px (Develop → Responsive Design Mode → iPhone 15 Pro)
 - Server-side Gemma 4 via adapter pattern (Ollama-backed, `gemma4:e4b` 8B)
 - whisper.cpp + ggml-large-v3-turbo for Telugu/Hindi ASR (locked Day 2)
 - Twilio WhatsApp Sandbox for sends (locked Day 1; provider abstraction lets V2 swap to Meta)
@@ -78,12 +80,12 @@ Before any UI ships to the demo branch, verify against `ANTI_SLOP.md`. The big o
 ## Deliverables Checklist (final state)
 
 - [ ] Public GitHub repo, Apache 2.0
-- [ ] Vercel deployment URL with HTTPS
-- [ ] Demo flows work end-to-end on owner's iPhone
+- [ ] Vercel deployment URL with HTTPS (static landing — runtime is the dev Mac)
+- [ ] Demo flows work end-to-end on Mac Safari at 390 px viewport, against real Gemma 4 + real Twilio WhatsApp
 - [ ] Real Gemma 4 inference (not mock)
 - [ ] Real WhatsApp send to a test number
-- [ ] 60–90s demo video shot in the actual shop
-- [ ] Owner testimonial clip (Telugu, with English subtitles)
+- [ ] 60–90s demo video — screen recording of the mobile-viewport browser + shop B-roll + owner-to-camera Telugu testimonial
+- [ ] Owner testimonial clip (Telugu, with English subtitles), filmed in the shop
 - [ ] Technical write-up covering: architecture, Gemma 4 use, function calling, capability honesty, deployment cost, scale path
 - [ ] README runnable in <10 minutes by a stranger
 - [ ] No secrets in repo

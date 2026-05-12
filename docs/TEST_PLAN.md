@@ -50,11 +50,11 @@ Run before the owner field test (Day 7) and again after Day 9 reliability work.
 
 | # | Step | Expected |
 |---|---|---|
-| 1.1 | Open Saathi on iPhone Safari | Today screen, Saathi mark, language switcher, Record button visible |
+| 1.1 | Open Saathi in Safari at the 390 px responsive viewport | Today screen, Saathi mark, language switcher, Record button visible |
 | 1.2 | Tap Record | Mic permission prompt (first time only) |
 | 1.3 | Speak 6s Telugu clip | Live waveform, timer increments |
 | 1.4 | Tap stop | "Transcribing Telugu..." status, then transcript appears |
-| 1.5 | Tap Add Photo | iOS camera opens |
+| 1.5 | Tap Add Photo | File picker opens (camera on a device, file chooser on desktop) |
 | 1.6 | Capture car | Thumbnail appears, Save button enabled |
 | 1.7 | Tap Save | Status walks: Saving audio → Transcribing → Parsing → Saved |
 | 1.8 | Confirmation screen shows parsed fields | Name, plate, services, amount, notes — all populated, all editable |
@@ -111,34 +111,32 @@ Without `?demo=1`:
 | Network offline mid-flow | Service worker queues the send; fires on reconnect |
 | iOS Safari mic codec quirks | Server accepts both webm and mp4/m4a |
 
-## Owner field test protocol (Day 7)
+## Owner field validation protocol (Day 7)
 
-Don't help unless the owner truly stalls. Take notes silently.
+Developer drives the laptop. Owner reads the parsed records and Telugu drafts aloud and rates each.
 
 **Watch for:**
-- Did the owner find the Record button without prompting?
-- Did the mic permission flow confuse him?
-- After speaking, did the parsed record match what he said?
+- After the owner speaks the Telugu voice note, did the parsed record match what he said?
 - Did the Telugu draft sound natural to him? Did he edit it before sending?
-- Did the customer respond to the WhatsApp message?
-- What did he tap that he didn't mean to?
-- What did he look for that wasn't there?
+- Did the real customer respond to the WhatsApp message?
+- Where did the owner pause or frown? That's the prompt-engineering signal.
 
 **Capture before leaving:**
-- Owner-to-camera clip in Telugu (~12s)
-- B-roll: shop wide, owner hands on car, iPhone home screen, real customer car (with permission), WhatsApp arrival on second phone
+- Owner-to-camera Telugu testimonial (~12s)
+- 25-second Telugu voice note by the owner (the audio that plays in shot #3 of the demo video)
+- B-roll: shop wide, owner hands on car, real customer car (with permission), WhatsApp arrival on the owner's phone
 
 **Same-evening fix list:**
-1. Top 3 things that confused the owner — fix before Day 8 polish starts.
+1. Top 3 things that misparsed or were rewritten — fix before Day 8 polish starts.
 
 ## Pre-demo rehearsal (Day 10 morning, before video shoot)
 
-Run the full demo path end-to-end on the owner's iPhone three times in a row, with `?demo=1`:
+Run the full demo path end-to-end in Mac Safari at the 390 px viewport three times in a row, with `?demo=1`:
 
-1. Add a fresh customer via voice + photo
-2. Wait, simulate a "lapsed" customer (use the seed data with last_visit_at backdated)
-3. Open that customer, draft, edit, send
-4. Verify WhatsApp arrival
+1. Add a fresh customer via voice + photo (uploading the photo file captured at the shop)
+2. Open a lapsed customer (use the seed data with last_visit_at backdated)
+3. Draft, edit, send
+4. Verify WhatsApp arrival on the second phone
 5. Verify all tool-call traces appear
 
 If any of the three runs has a glitch, fix before shooting.

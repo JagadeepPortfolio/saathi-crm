@@ -2,20 +2,11 @@
 // Two scoped tool sets — one per agent (intake, followup).
 // See docs/AI_AGENT_SPEC.md.
 
+// customer.search is intentionally NOT exposed here. The intake handler
+// pre-fetches recent customers and passes them in via knownCustomers, so the
+// search is already done by the time the model runs. Listing search as a tool
+// invited the model to pick it and stall the single-turn flow.
 export const INTAKE_TOOLS = [
-  {
-    name: "customer.search",
-    description:
-      "Find an existing customer by phone, license plate, or fuzzy name match.",
-    parameters: {
-      type: "object",
-      properties: {
-        phone: { type: "string" },
-        license_plate: { type: "string" },
-        name_fuzzy: { type: "string" },
-      },
-    },
-  },
   {
     name: "customer.create",
     description: "Create a new customer record with their first visit.",

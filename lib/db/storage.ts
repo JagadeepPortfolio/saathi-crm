@@ -15,7 +15,7 @@ export async function uploadAudio(
   const path = `${PILOT_SHOP_ID}/${Date.now()}-${randomSuffix()}.audio`;
   const { error } = await db()
     .storage.from("intake-audio")
-    .upload(path, bytes, { contentType, upsert: false });
+    .upload(path, bytes, { contentType: baseMime(contentType), upsert: false });
   if (error) throw new Error(`uploadAudio failed: ${error.message}`);
   return { bucket: "intake-audio", path };
 }
@@ -27,9 +27,15 @@ export async function uploadPhoto(
   const path = `${PILOT_SHOP_ID}/${Date.now()}-${randomSuffix()}.image`;
   const { error } = await db()
     .storage.from("intake-photos")
-    .upload(path, bytes, { contentType, upsert: false });
+    .upload(path, bytes, { contentType: baseMime(contentType), upsert: false });
   if (error) throw new Error(`uploadPhoto failed: ${error.message}`);
   return { bucket: "intake-photos", path };
+}
+
+// iOS Safari labels MediaRecorder blobs as "audio/mp4;codecs=opus".
+// Supabase bucket allow-lists match the full string, so strip parameters.
+function baseMime(contentType: string): string {
+  return contentType.split(";")[0].trim().toLowerCase();
 }
 
 export async function signedUrl(
