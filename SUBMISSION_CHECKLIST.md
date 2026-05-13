@@ -1,145 +1,121 @@
 # Submission Checklist — Saathi
 
-> Steps a human must run to take Saathi from "code complete" to "submitted to Kaggle". Marked ☐ if pending.
+> Steps a human must run to take Saathi from "code complete" to "submitted to Kaggle". Items marked ☐ are pending; ✅ are done.
 
-## 1. Push the final commit ☐
+## What's already done
 
-The working tree on the dev Mac contains the full video build pipeline, the
-final 90-second video, README screenshots, and the submission checklist. None
-of this has been pushed to GitHub yet.
+- ✅ **Public GitHub repo** with Apache 2.0 LICENSE — https://github.com/JagadeepPortfolio/saathi-crm
+- ✅ **All commits pushed** to `origin/main` (latest: YouTube URL added to the write-up)
+- ✅ **Live landing deployed** at https://saathi-crm.vercel.app — full marketing page with embedded YouTube video, four screenshots, three Gemma 4 pillars, capability-honesty cards, pricing table, and a clone-and-run code block. Replaces the Day 1 placeholder
+- ✅ **YouTube video live** at https://youtu.be/0w4-KMMX_6o — 90s, burned-in English subtitles
+- ✅ **Kaggle Writeup body** drafted at `docs/KAGGLE_WRITEUP.md` (1,313 words — under the 1,500 cap with ~190 word buffer)
+- ✅ **Kaggle cover image** at `docs/screenshots/cover.png` (560 × 280, the dimensions Kaggle expects)
+- ✅ **Anti-slop sweep** clean (em-dash, emoji, banned-icon, generic-loading checks all empty)
+- ✅ **Secrets scan** clean (no Twilio SIDs, Supabase keys, or generic tokens in tracked files)
+- ✅ **README runnable in <10 minutes** with screenshots
+- ✅ **90s demo video built** at `video/output/submission.mp4`, fully reproducible via `video/build.sh`
+- ✅ **Real Gemma 4 function-call traces** visible in the video at shots 5 and 6
+- ✅ **Real Twilio WhatsApp send infrastructure** wired (Sandbox; production swap is one env var)
 
-```bash
-git push origin main
-```
+---
 
-Confirm: `git status` shows "Your branch is up to date with 'origin/main'."
+## 1. Verify the YouTube video is "viewable without login" ☐
 
-## 2. Make the GitHub repo public ☐
+Kaggle requires: *"viewable by the judges without requiring a login"*.
 
-The repo is currently **private**. Judges cannot read a private repo.
+Both **Unlisted** and **Public** satisfy that — anyone with the link can watch.
+**Private** does NOT.
 
-```bash
-gh repo edit JagadeepPortfolio/saathi-crm --visibility public --accept-visibility-change-consequences
-```
+Open https://youtu.be/0w4-KMMX_6o in a **logged-out incognito window** and confirm the video plays. If a "Sign in" wall appears, the video is set to Private — flip it to Unlisted in YouTube Studio → Video → Visibility.
 
-Confirm at https://github.com/JagadeepPortfolio/saathi-crm — opens in a logged-out browser without "404".
+## 2. Create the Kaggle Writeup ☐
 
-Optional, recommended: add topics for discoverability.
+Go to your competition's Writeups section and click **New Writeup**.
 
-```bash
-gh repo edit JagadeepPortfolio/saathi-crm \
-  --add-topic gemma --add-topic gemma-4 --add-topic crm \
-  --add-topic pwa --add-topic whatsapp --add-topic kaggle-hackathon \
-  --add-topic indian-msme --add-topic digital-equity
-```
-
-## 3. Upload the demo video to YouTube ☐
-
-The video is at `video/output/submission.mp4` (90.2s, 3.3 MB, H.264/AAC, 1080p).
-
-1. Go to https://studio.youtube.com → **CREATE → Upload videos**
-2. Drag in `video/output/submission.mp4`
-3. **Title:** `Saathi — Voice-first CRM for Indian MSMEs, built on Gemma 4`
-4. **Description:**
-   ```
-   Saathi is a voice-first CRM co-pilot for Indian small businesses, built on
-   Gemma 4 (gemma4:e4b, 8B). The owner records a 10-second Telugu voice note,
-   photographs the customer's car, and Saathi turns it into a tracked customer
-   plus an AI-drafted WhatsApp follow-up — approved and sent in one tap.
-
-   Submitted to the Kaggle Gemma 4 Good Hackathon — Digital Equity track.
-
-   Repo: https://github.com/JagadeepPortfolio/saathi-crm
-   Write-up: https://github.com/JagadeepPortfolio/saathi-crm/blob/main/docs/SUBMISSION.md
-   License: Apache 2.0
-   ```
-5. **Visibility:** Unlisted (judges access via link; not public)
-6. **Audience:** "No, it's not made for kids"
-7. Save. Copy the share URL.
-
-## 4. Update SUBMISSION.md with the YouTube URL ☐
-
-In `docs/SUBMISSION.md`, replace the line:
-
-```
-| Demo video (YouTube unlisted) | _filled in at submission time — see `SUBMISSION_CHECKLIST.md`_ |
-```
-
-with the actual URL, then:
-
-```bash
-git add docs/SUBMISSION.md
-git commit -m "Add YouTube demo URL to submission write-up"
-git push
-```
-
-## 5. Submit to Kaggle ☐
-
-Submission form: https://www.kaggle.com/competitions/google-gemma-3n-impact-challenge/submit  
-(replace with the correct path if the URL has changed)
-
-Fields you'll fill:
+### 2a. Title and subtitle
 
 | Field | Value |
 |---|---|
-| Project title | **Saathi — Voice-first CRM for Indian MSMEs** |
-| Track | **Digital Equity** (primary). Secondary fit: Future of Education / Inclusion |
-| Public GitHub URL | https://github.com/JagadeepPortfolio/saathi-crm |
-| Video URL | The unlisted YouTube link from step 3 |
-| Demo URL | https://saathi-crm.vercel.app (landing; the runtime is the Mac via cloudflared tunnel — explained in SUBMISSION.md) |
-| Description / write-up | Link to `docs/SUBMISSION.md` in the repo, or paste the body |
-| License | Apache 2.0 |
+| Title | `Saathi — Voice-first CRM for Indian MSMEs, built on Gemma 4` |
+| Subtitle | `A 10-second Telugu voice note becomes a tracked customer plus an AI-drafted WhatsApp follow-up. Apache 2.0. $0 per shop, per month.` |
 
-After submitting, confirm:
-- Kaggle shows your entry with all URLs clickable
-- Open every URL in a logged-out incognito tab — all must load
+### 2b. Body
 
-## 6. Optional: announce ☐
+Open `docs/KAGGLE_WRITEUP.md` in your editor and **copy everything from the first `## The problem` heading to the end of the file**. Paste into the Kaggle Writeup body. Skip the title/subtitle and the top "Links" block — Kaggle has dedicated fields for those.
 
-Twitter / LinkedIn post with the YouTube link. Impact-track judges often scan
-social. Suggested template:
+Word count: 1,313 raw / 1,124 prose. Safely under 1,500.
+
+### 2c. Select Track
+
+Track: **Digital Equity** (primary). If Kaggle lets you select a secondary, pick **Inclusion** or **Future of Education**.
+
+### 2d. Media Gallery
+
+Two things to attach:
+
+1. **Cover image (required)** — upload `docs/screenshots/cover.png` (560 × 280, Saathi-branded)
+2. **Demo video** — paste the YouTube URL `https://youtu.be/0w4-KMMX_6o` into the video attachment field. Kaggle will embed it.
+
+### 2e. Project Links (Attachments → Project Links section)
+
+| Link Label | URL |
+|---|---|
+| Code Repository | `https://github.com/JagadeepPortfolio/saathi-crm` |
+| Live Demo | `https://saathi-crm.vercel.app` |
+| Long technical write-up | `https://github.com/JagadeepPortfolio/saathi-crm/blob/main/docs/SUBMISSION.md` |
+
+### 2f. Save
+
+Click **Save**. Kaggle saves the Writeup as a draft. You'll see the "Submit" button appear in the top-right corner.
+
+## 3. Hit Submit ☐
+
+Click the **Submit** button (top-right of the Writeup view).
+
+Each team gets one Writeup, but you can un-submit, edit, and re-submit as many times as you want before the deadline. So submit early, polish later.
+
+## 4. Post-submit verification ☐
+
+Open every URL in a **logged-out incognito tab**. All must load:
+
+- Repo lands at the README with screenshots — https://github.com/JagadeepPortfolio/saathi-crm
+- Live demo lands on the Saathi landing page with the video embed — https://saathi-crm.vercel.app
+- YouTube plays without login — https://youtu.be/0w4-KMMX_6o
+- Long write-up loads on GitHub — https://github.com/JagadeepPortfolio/saathi-crm/blob/main/docs/SUBMISSION.md
+- The Kaggle Writeup itself appears in the competition's Writeups list
+
+## 5. Optional: announce ☐
+
+Twitter / LinkedIn post. Impact-track judges sometimes scan social. Suggested:
 
 ```
-Shipped @Anthropic Saathi for the Gemma 4 Good Hackathon —
+Shipped Saathi for the Gemma 4 Good Hackathon —
 a voice-first CRM for Indian MSMEs, in Telugu, on the
-owner's phone, built on @GoogleDeepMind Gemma 4 (8B).
+owner's phone, built on Gemma 4 (gemma4:e4b, 8B).
 
-10-second voice note → tracked customer.
-Tap → Telugu WhatsApp follow-up.
-$0/month per shop. Apache 2.0.
+10s Telugu voice → tracked customer.
+One tap → AI-drafted Telugu WhatsApp.
+$0/shop/month. Apache 2.0.
 
-[YouTube link]
+https://youtu.be/0w4-KMMX_6o
+https://github.com/JagadeepPortfolio/saathi-crm
 ```
 
 ---
 
-## What's already done (no action needed)
-
-- ✅ Public repo prepared with Apache 2.0 LICENSE
-- ✅ README runnable in <10 minutes with screenshots
-- ✅ SUBMISSION.md write-up complete (4 capability-honesty notes, architecture, cost model, impact)
-- ✅ All 14 anti-slop rules pass (em dash sweep, emoji sweep, banned icon sweep — all empty)
-- ✅ Secrets scan clean — no Twilio SIDs, Supabase keys, or generic tokens in tracked files
-- ✅ `.env.local` properly gitignored; only `.env.example` (template) is tracked
-- ✅ 90-second demo video built (`video/output/submission.mp4`)
-- ✅ Video assembly fully reproducible — `video/build.sh` rebuilds from scratch
-- ✅ Real Gemma 4 function-call trace visible in the video at shots 5 and 6
-- ✅ Real Twilio WhatsApp send infrastructure wired (Sandbox; production swap is one env var)
-- ✅ Telugu generation validated — Gemma drafts review well per Day 7 pilot
-
 ## Pre-submission sanity replay
 
-Before clicking Submit on Kaggle, run these once on a fresh terminal:
+Run these once before clicking Submit:
 
 ```bash
 cd /Users/jaggu/Desktop/Gemma4/saathi-crm
-git status                                  # → working tree clean
-git log --oneline -5                        # → see "Day 7" + "video assembly" commits
-curl -sI https://saathi-crm.vercel.app | head -1  # → HTTP/2 200
-open video/output/submission.mp4            # → plays for 90s with subtitles
-ls samples/ramesh_te.m4a samples/swift.jpg  # → both present
-grep -rE "sb_secret_|AC[a-f0-9]{32}" --include="*.ts" --include="*.json" . | grep -v node_modules
-# → empty
+git status                                                          # → clean
+git log --oneline -3                                                # → see recent commits on origin/main
+curl -sI https://saathi-crm.vercel.app | head -1                    # → HTTP/2 200
+curl -s https://saathi-crm.vercel.app | grep -oE "Voice-first CRM"  # → "Voice-first CRM"
+open video/output/submission.mp4                                    # → plays 90s with subtitles
+wc -w docs/KAGGLE_WRITEUP.md                                        # → ~1313
+sips -g pixelWidth -g pixelHeight docs/screenshots/cover.png        # → 560 x 280
 ```
 
-If all six pass, ship it.
+If all seven pass, ship it.

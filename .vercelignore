@@ -1,0 +1,27 @@
+# Files Vercel should not upload — kept local + on GitHub but skip the deploy bundle.
+# Vercel deploy bundles have a 100 MB per-file limit and a total upload cap.
+
+# Local-only model files (whisper.cpp model is 1.5 GB)
+models/
+
+# Sample audio + photo files used by test scripts and the video build —
+# not needed by the Next.js app on Vercel
+samples/
+video/
+
+# Local env files (Vercel reads its own env vars)
+.env.local
+.env.production*
+
+# OS / IDE noise
+.DS_Store
+.idea/
+.vscode/
+
+# Build outputs that will be regenerated on Vercel anyway
+.next/
+.turbo/
+node_modules/
+
+# Markdown docs at root that aren't needed by the runtime
+SUBMISSION_CHECKLIST.md

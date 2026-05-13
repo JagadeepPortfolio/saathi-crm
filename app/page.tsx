@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Mic } from "lucide-react";
 
 import BottomBar from "@/components/BottomBar";
+import Landing from "@/components/Landing";
 import { customerStatus } from "@/lib/types";
 import {
   lapsedCount,
@@ -11,7 +12,15 @@ import {
 
 export const dynamic = "force-dynamic";
 
-export default async function Today() {
+export default async function Home() {
+  // Vercel production serves the landing page; local dev shows the Today screen.
+  if (process.env.LANDING_MODE === "1") {
+    return <Landing />;
+  }
+  return <Today />;
+}
+
+async function Today() {
   const [recent, todayCount, lapsed] = await Promise.all([
     recentCustomers(5),
     todayAddedCount(),
