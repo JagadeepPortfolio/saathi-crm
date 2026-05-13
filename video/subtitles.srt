@@ -1,0 +1,35 @@
+1
+00:00:00,500 --> 00:00:07,800
+A small detailing studio in Hyderabad. The owner serves about fifteen customers a week, and forgets most of them within a month.
+
+2
+00:00:08,000 --> 00:00:14,800
+Saathi is a CRM that lives on his phone. No app store, no SaaS subscription, no English forms.
+
+3
+00:00:15,200 --> 00:00:29,400
+Owner's voice (Telugu code-mix): "Ramesh sir, blue Swift TS09EX1234, full ceramic detailing, two thousand five hundred paid, complained about wax smell, come back in two months."
+
+4
+00:00:30,000 --> 00:00:37,800
+That voice goes to whisper.cpp for Telugu transcription. The transcript and the car photo go to Gemma 4.
+
+5
+00:00:38,000 --> 00:00:41,800
+A real Gemma 4 function call.
+
+6
+00:00:42,000 --> 00:00:54,800
+Two days later, one tap drafts a Telugu follow-up. Gemma 4 reads the visit history and writes in the owner's voice — not in marketing voice.
+
+7
+00:00:55,000 --> 00:01:04,800
+He approves, and sends. Through the WhatsApp Business API. To a real customer.
+
+8
+00:01:05,500 --> 00:01:19,500
+Ramesh, the shop owner. He runs his business in Telugu, on his phone. With Saathi, his CRM does the same.
+
+9
+00:01:20,500 --> 00:01:29,500
+Saathi. Built on Gemma 4. For the 63 million Indian small businesses still locked out of CRM.

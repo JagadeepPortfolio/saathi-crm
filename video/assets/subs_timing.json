@@ -1,0 +1,56 @@
+[
+  {
+    "id": "01",
+    "start": 0.5,
+    "end": 7.8,
+    "text": "A small detailing studio in Hyderabad. The owner serves about fifteen customers a week, and forgets most of them within a month."
+  },
+  {
+    "id": "02",
+    "start": 8,
+    "end": 14.8,
+    "text": "Saathi is a CRM that lives on his phone. No app store, no SaaS subscription, no English forms."
+  },
+  {
+    "id": "03",
+    "start": 15.2,
+    "end": 29.4,
+    "text": "Owner's voice (Telugu code-mix): “Ramesh sir, blue Swift TS09EX1234, full ceramic detailing, two thousand five hundred paid, complained about wax smell, come back in two months.”"
+  },
+  {
+    "id": "04",
+    "start": 30,
+    "end": 37.8,
+    "text": "That voice goes to whisper.cpp for Telugu transcription. The transcript and the car photo go to Gemma 4."
+  },
+  {
+    "id": "05",
+    "start": 38,
+    "end": 41.8,
+    "text": "A real Gemma 4 function call."
+  },
+  {
+    "id": "06",
+    "start": 42,
+    "end": 54.8,
+    "text": "Two days later, one tap drafts a Telugu follow-up. Gemma 4 reads the visit history and writes in the owner's voice, not in marketing voice."
+  },
+  {
+    "id": "07",
+    "start": 55,
+    "end": 64.8,
+    "text": "He approves, and sends. Through the WhatsApp Business API. To a real customer."
+  },
+  {
+    "id": "08",
+    "start": 65.5,
+    "end": 79.5,
+    "text": "Ramesh, the shop owner. He runs his business in Telugu, on his phone. With Saathi, his CRM does the same."
+  },
+  {
+    "id": "09",
+    "start": 80.5,
+    "end": 89.5,
+    "text": "Saathi. Built on Gemma 4. For the 63 million Indian small businesses still locked out of CRM."
+  }
+]

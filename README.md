@@ -8,6 +8,17 @@ The pilot is a car detailing studio in Hyderabad. The architecture generalizes t
 
 > **Demo viewport.** Saathi is a mobile-first PWA — the same React code renders on iOS Safari, Android Chrome, and desktop browsers. The submission video and the README screenshots are recorded from Mac Safari at a **390 × 844 px** viewport (Develop → Responsive Design Mode → iPhone 15 Pro), so judges can clone the repo and reproduce every pixel of the demo locally. See `docs/SUBMISSION.md` for the deployment-shape rationale.
 
+<p align="center">
+  <img src="docs/screenshots/today.png" alt="Today screen" width="220" />
+  <img src="docs/screenshots/record.png" alt="Voice intake (Record)" width="220" />
+  <img src="docs/screenshots/customer-detail.png" alt="Customer detail with visits + messages" width="220" />
+  <img src="docs/screenshots/draft-review.png" alt="Draft Review with the live tool-call trace" width="220" />
+</p>
+
+<p align="center"><sub>Today · Voice intake · Customer detail · Draft Review with the live Gemma 4 tool-call trace</sub></p>
+
+The 90-second submission video is at [`video/output/submission.mp4`](video/output/submission.mp4). The build pipeline that produced it (screenshots, voiceover, music bed, subtitle overlays, ffmpeg stitch) is fully reproducible — see `video/build.sh`.
+
 | | |
 |---|---|
 | Live PWA | https://saathi-crm.vercel.app |

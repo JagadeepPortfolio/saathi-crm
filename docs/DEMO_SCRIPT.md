@@ -25,7 +25,7 @@ fidelity. The shop / owner shots are filmed at the shop with an iPhone.
 | 5 | 0:38–0:42 | Tight crop on the demo-mode log row: *ASR (2.6s) → Gemma 4 (8.5s) → customer.create → Supabase*. | VO: *"That's a real Gemma 4 function call, not a regex."* |
 | 6 | 0:42–0:55 | Caption: "Two days later." Screen recording: Customers → Lapsed → pick a customer → Draft follow-up. Telugu draft fills the textarea letter by letter. | VO: *"Two days later, one tap drafts a Telugu follow-up. Gemma 4 reads the visit history and writes in the owner's voice, not in marketing voice."* |
 | 7 | 0:55–1:05 | Screen recording: tap Send. Cut to a real iPhone screen — the customer's phone — where the WhatsApp message arrives in Telugu. | VO: *"He approves and sends. The message goes through the WhatsApp Business API, in Telugu, to a real customer."* |
-| 8 | 1:05–1:20 | **Owner clip** — owner speaks 12 seconds in Telugu directly to camera, in the shop. Subtitle in English. | Owner: *"Before, I forgot most of my customers. Now I send messages in Telugu and they come back. This is the first software made for me."* |
+| 8 | 1:05–1:20 | **Owner shot** — still photograph of the owner in the shop, slow Ken Burns zoom-in. English caption appears: *"Ramesh, the shop owner. He runs his business in Telugu, on his phone."* | VO: *"This is the owner of the shop. He runs his business in Telugu, on his phone. With Saathi, his CRM does the same."* |
 | 9 | 1:20–1:30 | Outro card: Saathi wordmark on cream + one-liner: *"Built on Gemma 4. For the 63 million Indian small businesses still locked out of CRM."* | Music fades. |
 
 ## Voiceover script (95 words, ~85 seconds at standard pace)

@@ -12,9 +12,10 @@ WhatsApp follow-ups fire to a real customer.
 
 | | |
 |---|---|
-| Live PWA | https://saathi-crm.vercel.app |
+| Live landing | https://saathi-crm.vercel.app |
 | Repo | https://github.com/JagadeepPortfolio/saathi-crm |
-| Video | (uploaded Day 10 — shop visit + owner clip) |
+| Demo video (in-repo) | [`video/output/submission.mp4`](../video/output/submission.mp4) — 90s, 1920×1080, with burned-in English subtitles |
+| Demo video (YouTube unlisted) | _filled in at submission time — see `SUBMISSION_CHECKLIST.md`_ |
 | License | Apache 2.0 (matches Gemma 4) |
 
 ---
